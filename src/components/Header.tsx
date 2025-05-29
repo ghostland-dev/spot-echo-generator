@@ -2,9 +2,11 @@
 import { Search, MessageCircle, Bell, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
+import { useNotifications } from "@/hooks/useNotifications";
 
 export const Header = () => {
   const navigate = useNavigate();
+  const { unreadCount } = useNotifications();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,9 +48,11 @@ export const Header = () => {
               className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors relative"
             >
               <Bell className="h-5 w-5 text-gray-600" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                3
-              </span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </Link>
             <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors md:hidden">
               <Menu className="h-5 w-5 text-gray-600" />
