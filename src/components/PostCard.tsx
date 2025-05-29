@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { MessageCircle, Share, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,9 +11,10 @@ interface PostCardProps {
   post: Post;
   onLike: () => void;
   onAddComment: (comment: string) => void;
+  onShare: () => void;
 }
 
-export const PostCard = ({ post, onLike, onAddComment }: PostCardProps) => {
+export const PostCard = ({ post, onLike, onAddComment, onShare }: PostCardProps) => {
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [currentReaction, setCurrentReaction] = useState<string>(post.liked ? 'like' : '');
@@ -117,7 +117,11 @@ export const PostCard = ({ post, onLike, onAddComment }: PostCardProps) => {
             <MessageCircle className="h-4 w-4 mr-2" />
             Commenter
           </Button>
-          <Button variant="ghost" className="flex-1 text-gray-600 hover:bg-gray-100">
+          <Button 
+            variant="ghost" 
+            className="flex-1 text-gray-600 hover:bg-gray-100"
+            onClick={onShare}
+          >
             <Share className="h-4 w-4 mr-2" />
             Partager
           </Button>
