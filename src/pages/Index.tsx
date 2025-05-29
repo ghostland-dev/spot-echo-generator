@@ -1,9 +1,10 @@
-
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { PostCreator } from "@/components/PostCreator";
 import { PostFeed } from "@/components/PostFeed";
 import { Header } from "@/components/Header";
+import { Stories } from "@/components/Stories";
+import { OnlineContacts } from "@/components/OnlineContacts";
 
 export interface Post {
   id: string;
@@ -103,6 +104,7 @@ const Index = () => {
       <div className="flex max-w-7xl mx-auto">
         <Sidebar />
         <main className="flex-1 px-4 py-6 max-w-2xl mx-auto">
+          <Stories />
           <PostCreator onCreatePost={handleCreatePost} />
           <PostFeed 
             posts={posts} 
@@ -110,6 +112,7 @@ const Index = () => {
             onAddComment={handleAddComment}
           />
         </main>
+        <OnlineContacts />
       </div>
     </div>
   );
