@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { PostCreator } from "@/components/PostCreator";
@@ -98,6 +99,11 @@ const Index = () => {
     ));
   };
 
+  const handleSharePost = (postId: string) => {
+    console.log('Post shared:', postId);
+    // Add share functionality here
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -110,6 +116,7 @@ const Index = () => {
             posts={posts} 
             onLikePost={handleLikePost}
             onAddComment={handleAddComment}
+            onSharePost={handleSharePost}
           />
         </main>
         <OnlineContacts />
