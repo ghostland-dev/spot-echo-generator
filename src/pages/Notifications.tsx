@@ -2,19 +2,46 @@
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { NotificationItem } from "@/components/NotificationItem";
+import { NotificationFilter } from "@/components/NotificationFilter";
 import { useNotifications } from "@/hooks/useNotifications";
 import { Button } from "@/components/ui/button";
-import { CheckCheck, Filter } from "lucide-react";
+import { CheckCheck } from "lucide-react";
 
 const Notifications = () => {
   const {
     notifications,
+    allNotifications,
     unreadCount,
+    filter,
+    setFilter,
     markAsRead,
     markAllAsRead,
     deleteNotification,
     handleFriendRequest
   } = useNotifications();
+
+  // Calculate filter counts
+  const filterCounts = {
+    all: allNotifications.length,
+    unread: allNotifications.filter(n => !n.isRead).length,
+    friend_request: allNotifications.filter(n => n.type === 'friend_request').length,
+    like: allNotifications.filter(n => n.type === 'like').length,
+    comment: allNotifications.filter(n => n.type === 'comment').length,
+    message: allNotifications.filter(n => n.type === 'message').length,
+    mention: allNotifications.filter(n => n.type === 'mention').length,
+  };
+
+  const getFilterTitle = () => {
+    switch (filter) {
+      case 'unread': return 'Notifications non lues';
+      case 'friend_request': return 'Demandes d\'ami';
+      case 'like': return 'J\'aime';
+      case 'comment': return 'Commentaires';
+      case 'message': return 'Messages';
+      case 'mention': return 'Mentions';
+      default: return 'Notifications';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -28,22 +55,22 @@ const Notifications = () => {
               <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
-                    {unreadCount > 0 && (
-                      <p className="text-sm text-gray-600 mt-1">
-                        {unreadCount} notification{unreadCount > 1 ? 's' : ''} non lue{unreadCount > 1 ? 's' : ''}
-                      </p>
-                    )}
+                    <h1 className="text-2xl font-bold text-gray-900">{getFilterTitle()}</h1>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {notifications.length} notification{notifications.length > 1 ? 's' : ''}
+                      {filter === 'all' && unreadCount > 0 && (
+                        <span className="ml-2 text-blue-600">
+                          ({unreadCount} non lue{unreadCount > 1 ? 's' : ''})
+                        </span>
+                      )}
+                    </p>
                   </div>
                   <div className="flex space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-gray-600"
-                    >
-                      <Filter className="h-4 w-4 mr-2" />
-                      Filtrer
-                    </Button>
+                    <NotificationFilter
+                      currentFilter={filter}
+                      onFilterChange={setFilter}
+                      counts={filterCounts}
+                    />
                     {unreadCount > 0 && (
                       <Button
                         variant="outline"
@@ -77,10 +104,13 @@ const Notifications = () => {
                       <CheckCheck className="h-8 w-8 text-gray-400" />
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Aucune notification
+                      {filter === 'all' ? 'Aucune notification' : `Aucune notification de type "${getFilterTitle().toLowerCase()}"`}
                     </h3>
                     <p className="text-gray-600">
-                      Vous êtes à jour ! Aucune nouvelle notification.
+                      {filter === 'all' 
+                        ? 'Vous êtes à jour ! Aucune nouvelle notification.'
+                        : 'Aucune notification de ce type pour le moment.'
+                      }
                     </p>
                   </div>
                 )}

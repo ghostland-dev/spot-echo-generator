@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Notification } from '@/types/notifications';
+import { useToast } from '@/hooks/use-toast';
 
 // Données simulées pour la démonstration
 const mockNotifications: Notification[] = [
@@ -43,11 +44,29 @@ const mockNotifications: Notification[] = [
     timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
     isRead: true,
     metadata: { userId: 'thomas-bernard' }
+  },
+  {
+    id: '5',
+    type: 'mention',
+    title: 'Mention dans un commentaire',
+    message: 'Julie Moreau vous a mentionné dans un commentaire',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=40&h=40&fit=crop&crop=face',
+    timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
+    isRead: false,
+    metadata: { postId: 'post-789' }
   }
 ];
 
 export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const [filter, setFilter] = useState<'all' | 'unread' | 'friend_request' | 'like' | 'comment' | 'message' | 'mention'>('all');
+  const { toast } = useToast();
+
+  const filteredNotifications = notifications.filter(notification => {
+    if (filter === 'all') return true;
+    if (filter === 'unread') return !notification.isRead;
+    return notification.type === filter;
+  });
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
@@ -59,26 +78,56 @@ export const useNotifications = () => {
           : notification
       )
     );
+    toast({
+      title: "Notification marquée comme lue",
+      description: "La notification a été marquée comme lue.",
+    });
   };
 
   const markAllAsRead = () => {
+    const unreadNotifications = notifications.filter(n => !n.isRead);
     setNotifications(prev => 
       prev.map(notification => ({ ...notification, isRead: true }))
     );
+    toast({
+      title: "Toutes les notifications marquées comme lues",
+      description: `${unreadNotifications.length} notification(s) marquée(s) comme lue(s).`,
+    });
   };
 
   const deleteNotification = (id: string) => {
+    const notification = notifications.find(n => n.id === id);
     setNotifications(prev => prev.filter(notification => notification.id !== id));
+    toast({
+      title: "Notification supprimée",
+      description: notification ? `"${notification.title}" a été supprimée.` : "La notification a été supprimée.",
+    });
   };
 
   const handleFriendRequest = (id: string, action: 'accept' | 'decline') => {
+    const notification = notifications.find(n => n.id === id);
     console.log(`Friend request ${action}ed for notification ${id}`);
     deleteNotification(id);
+    
+    if (action === 'accept') {
+      toast({
+        title: "Demande d'ami acceptée",
+        description: notification ? `Vous êtes maintenant ami avec ${notification.message.split(' ')[0]}.` : "La demande d'ami a été acceptée.",
+      });
+    } else {
+      toast({
+        title: "Demande d'ami refusée",
+        description: "La demande d'ami a été refusée.",
+      });
+    }
   };
 
   return {
-    notifications,
+    notifications: filteredNotifications,
+    allNotifications: notifications,
     unreadCount,
+    filter,
+    setFilter,
     markAsRead,
     markAllAsRead,
     deleteNotification,
