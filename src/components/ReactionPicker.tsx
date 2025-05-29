@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Heart, ThumbsUp, Laugh, Angry, Frown, Surprise } from "lucide-react";
+import { Heart, ThumbsUp, Laugh, Angry, Frown, ScanEye } from "lucide-react";
 
 interface Reaction {
   type: 'like' | 'love' | 'laugh' | 'angry' | 'sad' | 'wow';
@@ -21,7 +21,7 @@ export const ReactionPicker = ({ onReact, currentReaction }: ReactionPickerProps
     { type: 'like', icon: ThumbsUp, color: 'text-blue-600', label: 'J\'aime' },
     { type: 'love', icon: Heart, color: 'text-red-600', label: 'Amour' },
     { type: 'laugh', icon: Laugh, color: 'text-yellow-600', label: 'Rire' },
-    { type: 'wow', icon: Surprise, color: 'text-orange-600', label: 'Wow' },
+    { type: 'wow', icon: ScanEye, color: 'text-orange-600', label: 'Wow' },
     { type: 'sad', icon: Frown, color: 'text-purple-600', label: 'Triste' },
     { type: 'angry', icon: Angry, color: 'text-red-700', label: 'Colère' }
   ];
