@@ -5,7 +5,7 @@ import { NotificationItem } from "@/components/NotificationItem";
 import { NotificationFilter } from "@/components/NotificationFilter";
 import { useNotifications } from "@/hooks/useNotifications";
 import { Button } from "@/components/ui/button";
-import { CheckCheck } from "lucide-react";
+import { CheckCheck, Settings, Trash2 } from "lucide-react";
 
 const Notifications = () => {
   const {
@@ -41,6 +41,12 @@ const Notifications = () => {
       case 'mention': return 'Mentions';
       default: return 'Notifications';
     }
+  };
+
+  const clearAllNotifications = () => {
+    allNotifications.forEach(notification => {
+      deleteNotification(notification.id);
+    });
   };
 
   return (
@@ -82,8 +88,36 @@ const Notifications = () => {
                         Tout marquer comme lu
                       </Button>
                     )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-gray-600"
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Paramètres
+                    </Button>
                   </div>
                 </div>
+                
+                {/* Actions supplémentaires */}
+                {allNotifications.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-gray-500">
+                        Dernière mise à jour : {new Date().toLocaleTimeString('fr-FR')}
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={clearAllNotifications}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Tout supprimer
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Liste des notifications */}
