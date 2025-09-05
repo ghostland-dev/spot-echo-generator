@@ -1,11 +1,14 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { PostCreator } from "@/components/PostCreator";
 import { PostFeed } from "@/components/PostFeed";
 import { Header } from "@/components/Header";
 import { Stories } from "@/components/Stories";
 import { OnlineContacts } from "@/components/OnlineContacts";
+import { MobileNavigation } from "@/components/MobileNavigation";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { useToast } from "@/hooks/use-toast";
 
 export interface Post {
   id: string;
@@ -58,6 +61,8 @@ const Index = () => {
       liked: true
     }
   ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleCreatePost = (content: string, image?: string) => {
     const newPost: Post = {
@@ -100,16 +105,35 @@ const Index = () => {
   };
 
   const handleSharePost = (postId: string) => {
-    console.log('Post shared:', postId);
-    // Add share functionality here
+    if (navigator.share) {
+      navigator.share({
+        title: 'Publication Febspot',
+        text: 'Découvrez cette publication sur Febspot',
+        url: window.location.href + '?post=' + postId,
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href + '?post=' + postId);
+      toast({
+        title: "Lien copié",
+        description: "Le lien de la publication a été copié dans le presse-papiers",
+      });
+    }
   };
 
+  // SEO and accessibility
+  useEffect(() => {
+    document.title = "Febspot - Accueil";
+    document.querySelector('meta[name="description"]')?.setAttribute("content", 
+      "Découvrez les dernières publications de vos amis sur Febspot. Partagez vos moments et restez connecté."
+    );
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-background pb-16 md:pb-0">
       <Header />
       <div className="flex max-w-7xl mx-auto">
         <Sidebar />
-        <main className="flex-1 px-4 py-6 max-w-2xl mx-auto">
+        <main className="flex-1 px-4 py-6 max-w-2xl mx-auto" role="main">
           <Stories />
           <PostCreator onCreatePost={handleCreatePost} />
           <PostFeed 
@@ -117,10 +141,13 @@ const Index = () => {
             onLikePost={handleLikePost}
             onAddComment={handleAddComment}
             onSharePost={handleSharePost}
+            isLoading={isLoading}
           />
         </main>
         <OnlineContacts />
       </div>
+      <MobileNavigation />
+      <PWAInstallPrompt />
     </div>
   );
 };

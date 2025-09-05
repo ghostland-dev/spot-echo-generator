@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo, useCallback, lazy, Suspense } from "react";
 import { MessageCircle, Share, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,22 +14,22 @@ interface PostCardProps {
   onShare: () => void;
 }
 
-export const PostCard = ({ post, onLike, onAddComment, onShare }: PostCardProps) => {
+export const PostCard = memo(({ post, onLike, onAddComment, onShare }: PostCardProps) => {
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [currentReaction, setCurrentReaction] = useState<string>(post.liked ? 'like' : '');
 
-  const handleAddComment = () => {
+  const handleAddComment = useCallback(() => {
     if (newComment.trim()) {
       onAddComment(newComment.trim());
       setNewComment("");
     }
-  };
+  }, [newComment, onAddComment]);
 
-  const handleReaction = (reactionType: string) => {
+  const handleReaction = useCallback((reactionType: string) => {
     setCurrentReaction(reactionType);
     onLike();
-  };
+  }, [onLike]);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
@@ -65,8 +65,10 @@ export const PostCard = ({ post, onLike, onAddComment, onShare }: PostCardProps)
         <div className="mx-4 mb-3">
           <img 
             src={post.image} 
-            alt="Image du post"
+            alt={`Image partagée par ${post.author.name}`}
             className="w-full rounded-lg object-cover max-h-96 cursor-pointer hover:opacity-95 transition-opacity"
+            loading="lazy"
+            decoding="async"
           />
         </div>
       )}
@@ -181,4 +183,4 @@ export const PostCard = ({ post, onLike, onAddComment, onShare }: PostCardProps)
       )}
     </div>
   );
-};
+});

@@ -22,19 +22,21 @@ export const Sidebar = () => {
   ];
 
   return (
-    <aside className="hidden lg:block w-80 p-4">
-      <div className="space-y-2">
+    <aside className="hidden lg:block w-80 p-4" role="navigation" aria-label="Menu principal">
+      <nav className="space-y-2">
         {/* Profil utilisateur */}
         <Link 
           to="/profile"
-          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
+          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+          aria-label="Aller à votre profil"
         >
           <img 
             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=36&h=36&fit=crop&crop=face" 
             alt="Votre profil" 
             className="w-9 h-9 rounded-full"
+            loading="lazy"
           />
-          <span className="font-medium text-gray-900">Votre Profil</span>
+          <span className="font-medium text-foreground">Votre Profil</span>
         </Link>
 
         {/* Menu principal */}
@@ -44,15 +46,16 @@ export const Sidebar = () => {
               key={index}
               to={item.path}
               className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
-                item.active ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-200 text-gray-700'
+                item.active ? 'bg-accent text-accent-foreground' : 'hover:bg-muted/50 text-muted-foreground hover:text-foreground'
               }`}
+              aria-current={item.active ? 'page' : undefined}
             >
               <div className="flex items-center space-x-3">
                 <item.icon className="h-5 w-5" />
                 <span className="font-medium">{item.label}</span>
               </div>
               {item.count && (
-                <span className="bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded-full">
+                <span className="bg-muted text-muted-foreground text-xs px-2 py-1 rounded-full" aria-label={`${item.count} éléments`}>
                   {item.count}
                 </span>
               )}
@@ -61,15 +64,18 @@ export const Sidebar = () => {
             <div 
               key={index}
               className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
-                item.active ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-200 text-gray-700'
+                item.active ? 'bg-accent text-accent-foreground' : 'hover:bg-muted/50 text-muted-foreground hover:text-foreground'
               }`}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && console.log('Action')}
             >
               <div className="flex items-center space-x-3">
                 <item.icon className="h-5 w-5" />
                 <span className="font-medium">{item.label}</span>
               </div>
               {item.count && (
-                <span className="bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded-full">
+                <span className="bg-muted text-muted-foreground text-xs px-2 py-1 rounded-full" aria-label={`${item.count} éléments`}>
                   {item.count}
                 </span>
               )}
@@ -77,42 +83,46 @@ export const Sidebar = () => {
           )
         ))}
 
-        <button className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-200 transition-colors w-full text-left">
-          <ChevronDown className="h-5 w-5 text-gray-600" />
-          <span className="font-medium text-gray-700">Voir plus</span>
+        <button className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors w-full text-left" aria-label="Voir plus d'options">
+          <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          <span className="font-medium text-muted-foreground">Voir plus</span>
         </button>
 
-        <hr className="my-4" />
+        <hr className="my-4 border-border" />
 
         {/* Raccourcis */}
         <div className="space-y-2">
           <div className="flex items-center justify-between px-3">
-            <span className="text-gray-600 font-medium">Vos raccourcis</span>
+            <span className="text-muted-foreground font-medium">Vos raccourcis</span>
           </div>
           {shortcuts.map((shortcut, index) => (
             <div 
               key={index}
-              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
+              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && console.log('Navigate to', shortcut.name)}
             >
               <img 
                 src={shortcut.image} 
                 alt={shortcut.name}
                 className="w-9 h-9 rounded-lg object-cover"
+                loading="lazy"
               />
-              <span className="font-medium text-gray-900">{shortcut.name}</span>
+              <span className="font-medium text-foreground">{shortcut.name}</span>
             </div>
           ))}
         </div>
 
         {/* Lien vers À propos */}
-        <hr className="my-4" />
+        <hr className="my-4 border-border" />
         <Link 
           to="/about"
-          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-200 transition-colors text-gray-700"
+          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
         >
           <span className="font-medium">À propos de Febspot</span>
         </Link>
-      </div>
+      </nav>
     </aside>
   );
 };

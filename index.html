@@ -1,21 +1,34 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Febspot - Réseau Social</title>
-    <meta name="description" content="Febspot - Votre réseau social pour partager et connecter" />
-    <meta name="author" content="Lovable" />
+    <meta name="description" content="Febspot - Réseau social moderne pour partager vos moments et connecter avec vos amis" />
+    <meta name="keywords" content="réseau social, partage, photos, amis, communauté" />
+    <meta name="author" content="Febspot" />
 
-    <meta property="og:title" content="Febspot - Réseau Social" />
-    <meta property="og:description" content="Febspot - Votre réseau social pour partager et connecter" />
+    <meta property="og:title" content="Febspot - Votre réseau social" />
+    <meta property="og:description" content="Partagez vos moments et connectez avec vos amis sur Febspot" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Febspot" />
   </head>
 
   <body>
@@ -23,5 +36,20 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Register service worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
